@@ -1,0 +1,126 @@
+{
+	"info": {
+		"_postman_id": "3ce1690c-7cf1-4a3b-a0f2-2b6a9ee8f04a",
+		"name": "TaxManager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetMunicipalities",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:54269/municipalities",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54269",
+					"path": [
+						"municipalities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTaxesForDay",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:54269/municipalities/Vilnius/date/2016.02.02",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54269",
+					"path": [
+						"municipalities",
+						"Vilnius",
+						"date",
+						"2016.02.02"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Gettaxes for day DataNotFound",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:54269/municipalities/Kaunas/date/2016.02.02",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54269",
+					"path": [
+						"municipalities",
+						"Kaunas",
+						"date",
+						"2016.02.02"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Gettaxes for day data not found",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:54269/municipalities/Vilnius/date/2019.02.02",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54269",
+					"path": [
+						"municipalities",
+						"Vilnius",
+						"date",
+						"2019.02.02"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert taxes for day",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"dateFrom\": \"2019-07-07\",\n    \"dateTo\": \"2016-07-07\",\n    \"municipalityId\": 1,\n    \"taxtype\": 2,\n    \"taxValue\": 0.7\n}"
+				},
+				"url": {
+					"raw": "http://localhost:54269/municipalities/Vilnius/Add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54269",
+					"path": [
+						"municipalities",
+						"Vilnius",
+						"Add"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

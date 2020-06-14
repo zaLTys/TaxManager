@@ -39,7 +39,7 @@ namespace TaxManager.Api.DataAccess
             var municipalityFound = await _context.Municipalities.SingleOrDefaultAsync(x => x.Id == municipalityId);
             if (municipalityFound == null)
                 return null;
-            var taxEntriesForDate = await _context.TaxEntries.Where(x => x.DateFrom <= date && x.DateTo >= date).ToListAsync();
+            var taxEntriesForDate = await _context.TaxEntries.Where(x => x.DateFrom <= date && x.DateTo >= date && x.MunicipalityId == municipalityId).ToListAsync();
             return taxEntriesForDate;
         }
 
@@ -48,7 +48,7 @@ namespace TaxManager.Api.DataAccess
             try
             {
                 await _context.TaxEntries.AddAsync(taxEntryToInsert);
-                await _context.SaveChangesAsync();
+                var saved = Save();
                 return taxEntryToInsert;
             }
             catch (Exception e)
@@ -58,6 +58,12 @@ namespace TaxManager.Api.DataAccess
             }
             
         }
-    }}
+
+        public bool Save()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
+    }
+}
 
     

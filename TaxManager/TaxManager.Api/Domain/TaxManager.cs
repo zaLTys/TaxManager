@@ -39,7 +39,6 @@ namespace TaxManager.Api.Domain
                 result.ErrorMessage += "Incorrect input";
                 return result;
             }
-
             var dateAsDateTime = Convert.ToDateTime(date);
             
             var municipalityTaxesForDate = await GetMunicipalityTaxesForDate(municipalityName, dateAsDateTime);
@@ -49,13 +48,19 @@ namespace TaxManager.Api.Domain
                 return result;
             }
 
-            var appliedTaxEntry = GetTaxByPriority(municipalityTaxesForDate);
+            var taxesForDate = municipalityTaxesForDate.ToList();
+            if (!taxesForDate.Any())
+            {
+                result.ErrorMessage += $"No tax entries found for {municipalityName}";
+                return result;
+            }
+            
 
+            var appliedTaxEntry = GetTaxByPriority(taxesForDate);
             if (result.ErrorMessage == null && appliedTaxEntry !=null)
             {
                 result.TaxApplied = appliedTaxEntry.TaxValue;
             }
-
             return result;
         }
 
@@ -64,7 +69,7 @@ namespace TaxManager.Api.Domain
             var municipality = _taxRepository.GetMunicipalityAsync(municipalityName);
             if (municipality == null)
             {
-                
+                //Todo handle
             }
 
             var entity = _mapper.Map<TaxEntry>(taxEntry);
