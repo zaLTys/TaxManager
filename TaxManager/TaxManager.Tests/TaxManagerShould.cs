@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using TaxManager.Api.DataAccess;
 using TaxManager.Api.Domain;
-using TaxManager.Api.Models;
 using TaxManager.Core.Models;
 using Xunit;
 
@@ -15,6 +14,8 @@ namespace TaxManager.Tests
     {
 
         private readonly Api.Domain.TaxManager _taxManager;
+        private readonly TestRepository _testRepository;
+
         private readonly Mock<ITaxManager> _taxManagerMock;
 
         private readonly Mock<ITaxRepository> _taxRepositoryMock;
@@ -48,13 +49,6 @@ namespace TaxManager.Tests
         }
 
         [Fact]
-        public async Task ShouldReturnAllMunicipalities()
-        {
-            var result = await _taxManager.GetMunicipalitiesAsync();
-            Assert.Equal(2, result.ToList().Count);
-        }
-
-        [Fact]
         public void ShouldThrowExceptionIfInputIsIncorrect()
         {
             var exception = Assert.ThrowsAsync<ArgumentNullException>(() => _taxManager.GetMunicipalityTaxForDate("manchester", null));
@@ -77,11 +71,9 @@ namespace TaxManager.Tests
 
         public void GetTaxForMunicipalityAndDate(string municipalityName, string date, decimal expectedTax)
         {
-            var sut = _taxManagerMock;
-            sut.Setup(x => x.GetMunicipalityTaxForDate(municipalityName, date))
-                .Returns(Task.FromResult<ResultDto>(new ResultDto(){TaxApplied = 0}));
-                    //_taxEntries.Where(x => x.MunicipalityId == _municipalities.SingleOrDefault(y => y.Name == municipalityName).Id).SingleOrDefault());
+            var taxManager = new Api.Domain.TaxManager(_testRepository);
 
+            _taxManagerMock.Verify(x => x.GetMunicipalityTaxForDate(municipalityName, date), Times.Once);
 
         }
 

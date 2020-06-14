@@ -28,27 +28,19 @@ namespace TaxManager.Api.DataAccess
             return _context.Municipalities.OrderBy(c => c.Name).ToList();
         }
 
-        public async Task<MunicipalityDto> GetMunicipalityAsync(int id)
+        public async Task<MunicipalityDto> GetMunicipalityAsync(string municipalityName)
         {
-            return await new Task<MunicipalityDto>(() => GetMunicipality(id));
+            return await _context.Municipalities.SingleOrDefaultAsync(x => x.Name == municipalityName);
         }
 
-        public async Task<IEnumerable<TaxEntryDto>> GetMunicipalityTaxesForDate(string municipality, DateTime date)
+        public async Task<IEnumerable<TaxEntryDto>> GetMunicipalityTaxesForDate(string municipalityName, DateTime date)
         {
-            var municipalityFound = await _context.Municipalities.SingleOrDefaultAsync(x => x.Name == municipality);
+            var municipalityFound = await _context.Municipalities.SingleOrDefaultAsync(x => x.Name == municipalityName);
             if (municipalityFound == null)
                 return null;
             var taxEntriesForDate = await _context.TaxEntries.Where(x => x.DateFrom <= date && x.DateTo >= date).ToListAsync();
             return taxEntriesForDate;
         }
-
-        public MunicipalityDto GetMunicipality(int municipalityId)
-        {
-            return new MunicipalityDto(1, "Vilnius");
-        }
-
-
-
 
     }}
 

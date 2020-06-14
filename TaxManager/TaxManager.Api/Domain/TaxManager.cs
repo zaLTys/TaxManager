@@ -38,9 +38,11 @@ namespace TaxManager.Api.Domain
 
 
 
-        public async Task<ResultDto> GetMunicipalityTaxForDate(string municipality, string date)
+        public async Task<ResultDto> GetMunicipalityTaxForDate(string municipalityName, string date)
         {
-            var municipalityTaxesForDate =  await _taxRepository.GetMunicipalityTaxesForDate(municipality, date);
+            var dateAsDateTime = Convert.ToDateTime(date);
+
+            var municipalityTaxesForDate =  await _taxRepository.GetMunicipalityTaxesForDate(municipalityName, dateAsDateTime);
 
             var municipalityTaxByPriority = municipalityTaxesForDate?.OrderBy(x => (int) x.TaxType).FirstOrDefault();
             if (municipalityTaxByPriority == null)

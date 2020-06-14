@@ -38,7 +38,13 @@ namespace TaxManager.Api
             });
 
             services.AddTransient<ITaxManager, Domain.TaxManager>();
+
+#if DEBUG
             services.AddTransient<ITaxRepository, TaxRepository>();
+#else
+            services.AddTransient<ITaxRepository, InMemoryTaxRepository>();
+#endif
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

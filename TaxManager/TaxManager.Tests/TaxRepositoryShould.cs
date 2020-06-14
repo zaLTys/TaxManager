@@ -63,14 +63,14 @@ namespace TaxManager.Tests
         [Theory]
         [InlineData(1, "Vilnius")]
         [InlineData(2, "Kaunas")]
-        public void ReturnSingleMunicipalityById(int municipalityId, string expectedName)
+        public void ReturnSingleMunicipalityById(int expectedId, string municipalityName)
         {
             _taxRepositoryMock
-                .Setup(x => x.GetMunicipalityAsync(municipalityId))
-                .Returns(Task.FromResult(_municipalities.SingleOrDefault(x => x.Name == expectedName)));
+                .Setup(x => x.GetMunicipalityAsync(municipalityName))
+                .Returns(Task.FromResult(_municipalities.SingleOrDefault(x => x.Name == municipalityName)));
 
-            var result = _taxRepositoryMock.Object.GetMunicipalityAsync(municipalityId).Result;
-            Assert.Equal(expectedName, result.Name);
+            var result = _taxRepositoryMock.Object.GetMunicipalityAsync(municipalityName).Result;
+            Assert.Equal(expectedId, result.Id);
         }
 
 

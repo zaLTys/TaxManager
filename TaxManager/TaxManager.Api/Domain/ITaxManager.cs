@@ -8,7 +8,7 @@ namespace TaxManager.Api.Domain
     public interface ITaxManager
     {
         public Task<IEnumerable<MunicipalityDto>> GetMunicipalitiesAsync();
-        public Task<ResultDto> GetMunicipalityTaxForDate(string municipality, string date);
+        public Task<ResultDto> GetMunicipalityTaxForDate(string municipalityName, string date);
         
     }
 }
