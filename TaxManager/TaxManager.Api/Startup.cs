@@ -40,9 +40,9 @@ namespace TaxManager.Api
             services.AddTransient<ITaxManager, Domain.TaxManager>();
 
 #if DEBUG
-            services.AddTransient<ITaxRepository, TaxRepository>();
+            services.AddTransient<ITaxRepository, TestRepository>();
 #else
-            services.AddTransient<ITaxRepository, InMemoryTaxRepository>();
+            services.AddTransient<ITaxRepository, TaxRepository>();
 #endif
 
         }

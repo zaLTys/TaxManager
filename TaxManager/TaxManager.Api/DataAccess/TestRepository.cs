@@ -14,22 +14,11 @@ namespace TaxManager.Api.DataAccess
         private readonly List<TaxEntryDto> _taxEntries;
 
 
-        public TestRepository()
+        public TestRepository(List<MunicipalityDto> municipalities, List<TaxEntryDto> taxEntries)
         {
-            _municipalities = new List<MunicipalityDto>
-            {
-                new MunicipalityDto (1,"Vilnius"),
-                new MunicipalityDto (2,"Kaunas")
+            _municipalities = municipalities;
 
-            };
-
-            _taxEntries = new List<TaxEntryDto>
-            {
-                new TaxEntryDto(1, DateTime.Today, DateTime.Today.AddDays(1), 1, TaxTypes.Daily),
-                new TaxEntryDto(2, DateTime.Today, DateTime.Today.AddDays(1), 1, TaxTypes.Daily),
-                new TaxEntryDto(3, DateTime.Today, DateTime.Today.AddDays(1), 1, TaxTypes.Daily),
-                new TaxEntryDto(4, DateTime.Today, DateTime.Today.AddDays(1), 1, TaxTypes.Daily)
-            };
+            _taxEntries = taxEntries;
         }
 
 
@@ -45,22 +34,19 @@ namespace TaxManager.Api.DataAccess
 
         public async Task<MunicipalityDto> GetMunicipalityAsync(string municipalityName)
         {
-            return await new Task<MunicipalityDto>(() => GetMunicipality(municipalityName));
+            return _municipalities.SingleOrDefault(x => x.Name == municipalityName);
         }
 
-        public async Task<IEnumerable<TaxEntryDto>> GetMunicipalityTaxesForDate(string municipalityName, DateTime date)
+        public async Task<IEnumerable<TaxEntryDto>> GetTaxEntriesAsync(int municipalityId, DateTime date)
         {
-            var municipalityFound = _municipalities.SingleOrDefault(x => x.Name == municipalityName);
+            var municipalityFound = _municipalities.SingleOrDefault(x => x.Id == municipalityId);
             if (municipalityFound == null)
                 return null;
             var taxEntriesForDate = _taxEntries.Where(x => x.DateFrom <= date && x.DateTo >= date).ToList();
             return taxEntriesForDate;
         }
 
-        public MunicipalityDto GetMunicipality(string municipalityName)
-        {
-            return new MunicipalityDto(1, "Vilnius");
-        }
+
 
     }}
 

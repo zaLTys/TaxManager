@@ -33,15 +33,15 @@ namespace TaxManager.Api.DataAccess
             return await _context.Municipalities.SingleOrDefaultAsync(x => x.Name == municipalityName);
         }
 
-        public async Task<IEnumerable<TaxEntryDto>> GetMunicipalityTaxesForDate(string municipalityName, DateTime date)
+        public async Task<IEnumerable<TaxEntryDto>> GetTaxEntriesAsync(int municipalityId, DateTime date)
         {
-            var municipalityFound = await _context.Municipalities.SingleOrDefaultAsync(x => x.Name == municipalityName);
+            var municipalityFound = await _context.Municipalities.SingleOrDefaultAsync(x => x.Id == municipalityId);
             if (municipalityFound == null)
                 return null;
             var taxEntriesForDate = await _context.TaxEntries.Where(x => x.DateFrom <= date && x.DateTo >= date).ToListAsync();
             return taxEntriesForDate;
         }
-
+        
     }}
 
     

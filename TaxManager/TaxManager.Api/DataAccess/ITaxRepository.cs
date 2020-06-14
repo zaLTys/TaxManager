@@ -12,6 +12,6 @@ namespace TaxManager.Api.DataAccess
 
         List<MunicipalityDto> GetAllMunicipalities();
         Task<MunicipalityDto> GetMunicipalityAsync(string municipalityName);
-        Task<IEnumerable<TaxEntryDto>> GetMunicipalityTaxesForDate(string municipalityName, DateTime date);
+        Task<IEnumerable<TaxEntryDto>> GetTaxEntriesAsync(int municipalityId, DateTime date);
     }
 }

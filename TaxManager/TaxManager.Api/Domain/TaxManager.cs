@@ -37,21 +37,44 @@ namespace TaxManager.Api.Domain
         }
 
 
-
-        public async Task<ResultDto> GetMunicipalityTaxForDate(string municipalityName, string date)
+        public async Task<ResultDto> GetMunicipalityTaxForDateAsync(string municipalityName, string date)
         {
             var dateAsDateTime = Convert.ToDateTime(date);
-
-            var municipalityTaxesForDate =  await _taxRepository.GetMunicipalityTaxesForDate(municipalityName, dateAsDateTime);
-
-            var municipalityTaxByPriority = municipalityTaxesForDate?.OrderBy(x => (int) x.TaxType).FirstOrDefault();
-            if (municipalityTaxByPriority == null)
+            var municipalityTaxesForDate =  await GetMunicipalityTaxesForDate(municipalityName, dateAsDateTime);
+            if (municipalityTaxesForDate == null)
             {
                 return null;
             }
 
-            return new ResultDto(municipalityTaxByPriority.TaxValue);
+            var result = GetTaxByPriority(municipalityTaxesForDate);
+            if (result == null)
+            {
+                return null;
+            }
+
+            return new ResultDto(result.TaxValue);
         }
+
+        private static TaxEntryDto GetTaxByPriority(IEnumerable<TaxEntryDto> municipalityTaxesForDate)
+        {
+            var municipalityTaxByPriority = municipalityTaxesForDate?.OrderByDescending(x => (int) x.TaxType).ToList();
+            var result = municipalityTaxByPriority?[0];
+            return result;
+        }
+
+
+        public async Task<IEnumerable<TaxEntryDto>> GetMunicipalityTaxesForDate(string municipalityName, DateTime date)
+        {
+            var municipality = await _taxRepository.GetMunicipalityAsync(municipalityName);
+            if (municipality == null)
+                return null;
+
+            var taxEntries = await _taxRepository.GetTaxEntriesAsync(municipality.Id, date);
+            
+            var taxEntriesForDate = taxEntries.Where(x => date >= x.DateFrom && date < x.DateTo).ToList();
+            return taxEntriesForDate;
+        }
+
         #endregion
     }
 }
