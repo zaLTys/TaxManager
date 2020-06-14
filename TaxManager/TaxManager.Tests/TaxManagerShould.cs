@@ -35,6 +35,12 @@ namespace TaxManager.Tests
         }
 
         [Fact]
+        public void ShouldReturnAllMunicipalities()
+        {
+            _taxManager.
+        }
+
+        [Fact]
         public void ShouldThrowExceptionIfRequestIsNull()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => _taxManager.GetMunicipalityTaxesForDate(null, null));
@@ -48,5 +54,7 @@ namespace TaxManager.Tests
 
             Assert.Throws<NotImplementedException>(() => _taxManager.GetMunicipalityTaxesForDate("Manchester", "201.01.01"));
         }
+
+
     }
 }

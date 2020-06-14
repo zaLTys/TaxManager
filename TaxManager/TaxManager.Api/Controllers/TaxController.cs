@@ -23,5 +23,14 @@ namespace TaxManager.Api.Controllers
             _mapper = mapper ??
                       throw new ArgumentNullException(nameof(mapper));
         }
+
+        [HttpGet]
+        public IActionResult GetMunicipalities()
+        {
+            var cityEntities = _taxRepository.GetAllMunicipalities();
+
+            return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities));
+        }
+
     }
 }
