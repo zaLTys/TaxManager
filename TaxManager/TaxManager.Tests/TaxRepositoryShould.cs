@@ -1,28 +1,78 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
+using System.Threading.Tasks;
 using TaxManager.Api.DataAccess;
+using TaxManager.Core.Models;
 using Xunit;
 
 namespace TaxManager.Tests
 {
-    public class TaxRepositoryShould
+    public class RaxRepositoryShould
     {
-        private readonly ITaxRepository _taxRepository;
 
-        public TaxRepositoryShould(ITaxRepository taxRepository)
+        private readonly Mock<ITaxRepository> _taxRepositoryMock;
+        private readonly List<MunicipalityDto> _municipalities;
+
+
+        public RaxRepositoryShould()
         {
-            _taxRepository = taxRepository;
+            _municipalities = new List<MunicipalityDto>
+            {
+                new MunicipalityDto (1,"Vilnius"),
+                new MunicipalityDto (2,"Kaunas")
+
+            };
+
+            
+            _taxRepositoryMock = new Mock<ITaxRepository>();
+            
+
         }
-
-
 
         [Fact]
-        public void ReturnNotFoundIfDataForNonExistingMunicipalityIsRequested()
+        public void ShouldReturnAllMunicipalities()
         {
+            _taxRepositoryMock
+                .Setup(x => x.GetAllMunicipalities()).Returns(_municipalities);
 
-            Assert.Throws<InvalidOperationException>(() =>_taxRepository.GetAllTaxEntriesForMunicipality(0));
+            var result = _taxRepositoryMock.Object.GetAllMunicipalities();
+            var results = result.ToList();
+            Assert.Equal(2, results.Count);
+            Assert.True(results.Exists(x => x.Name == "Vilnius" && x.Id == 1));
+            Assert.True(results.Exists(x => x.Name == "Kaunas" && x.Id == 2));
         }
+
+        [Fact]
+        public void ShouldReturnAllMunicipalitiesAsync()
+        {
+            _taxRepositoryMock
+                .Setup(x => x.GetAllMunicipalitiesAsync())
+                .Returns(Task.FromResult(_municipalities));
+
+            var result = _taxRepositoryMock.Object.GetAllMunicipalitiesAsync().Result;
+            var results = result.ToList();
+            Assert.Equal(2, results.Count);
+            Assert.True(results.Exists(x => x.Name == "Vilnius" && x.Id == 1));
+            Assert.True(results.Exists(x => x.Name == "Kaunas" && x.Id == 2));
+        }
+
+
+        [Theory]
+        [InlineData(1, "Vilnius")]
+        [InlineData(2, "Kaunas")]
+        public void ReturnSingleMunicipalityById(int municipalityId, string expectedName)
+        {
+            _taxRepositoryMock
+                .Setup(x => x.GetMunicipalityAsync(municipalityId))
+                .Returns(Task.FromResult(_municipalities.SingleOrDefault(x => x.Name == expectedName)));
+
+            var result = _taxRepositoryMock.Object.GetMunicipalityAsync(municipalityId).Result;
+            Assert.Equal(expectedName, result.Name);
+        }
+
+
     }
 }

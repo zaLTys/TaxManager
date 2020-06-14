@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TaxManager.Api.Models;
 using TaxManager.Core.Models;
 
 namespace TaxManager.Api.Domain
@@ -7,7 +8,7 @@ namespace TaxManager.Api.Domain
     public interface ITaxManager
     {
         public Task<IEnumerable<MunicipalityDto>> GetMunicipalitiesAsync();
-        public List<TaxEntryDto> GetMunicipalityTaxesForDate(string municipality, string date);
+        public Task<ResultDto> GetMunicipalityTaxForDate(string municipality, string date);
         
     }
 }

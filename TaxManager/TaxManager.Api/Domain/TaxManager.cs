@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TaxManager.Api.DataAccess;
+using TaxManager.Api.Models;
 using TaxManager.Core.Models;
 
 namespace TaxManager.Api.Domain
@@ -28,11 +30,25 @@ namespace TaxManager.Api.Domain
             return result;
         }
 
-
-
-        public List<TaxEntryDto> GetMunicipalityTaxesForDate(string municipality, string date)
+        public IEnumerable<MunicipalityDto> GetMunicipalities()
         {
-            throw new NotImplementedException();
+            return _taxRepository.GetAllMunicipalities();
+            
+        }
+
+
+
+        public async Task<ResultDto> GetMunicipalityTaxForDate(string municipality, string date)
+        {
+            var municipalityTaxesForDate =  await _taxRepository.GetMunicipalityTaxesForDate(municipality, date);
+
+            var municipalityTaxByPriority = municipalityTaxesForDate?.OrderBy(x => (int) x.TaxType).FirstOrDefault();
+            if (municipalityTaxByPriority == null)
+            {
+                return null;
+            }
+
+            return new ResultDto(municipalityTaxByPriority.TaxValue);
         }
         #endregion
     }
