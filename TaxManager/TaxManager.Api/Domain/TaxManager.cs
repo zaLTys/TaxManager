@@ -2,64 +2,57 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using TaxManager.Api.DataAccess;
 using TaxManager.Api.Models;
-using TaxManager.Core.Models;
 
 namespace TaxManager.Api.Domain
 {
     public class TaxManager : ITaxManager
     {
-        #region fields
         private readonly ITaxRepository _taxRepository;
-        #endregion
-
-        #region ctor
-        public TaxManager(ITaxRepository taxRepository)
+        private readonly IMapper _mapper;
+        public TaxManager(ITaxRepository taxRepository, IMapper mapper)
         {
             _taxRepository = taxRepository;
+            _mapper = mapper;
         }
-        #endregion  
 
-
-        #region methods
 
         public async Task<IEnumerable<MunicipalityDto>> GetMunicipalitiesAsync()
         {
             var result = await _taxRepository.GetAllMunicipalitiesAsync();
-            return result;
-        }
 
-        public IEnumerable<MunicipalityDto> GetMunicipalities()
-        {
-            return _taxRepository.GetAllMunicipalities();
-            
-        }
+            return _mapper.Map<IEnumerable<MunicipalityDto>>(result); ;
 
+        }
 
         public async Task<ResultDto> GetMunicipalityTaxForDateAsync(string municipalityName, string date)
         {
             var dateAsDateTime = Convert.ToDateTime(date);
-            var municipalityTaxesForDate =  await GetMunicipalityTaxesForDate(municipalityName, dateAsDateTime);
+
+
+            var result = new ResultDto(0,"");
+            var municipalityTaxesForDate = await GetMunicipalityTaxesForDate(municipalityName, dateAsDateTime);
             if (municipalityTaxesForDate == null)
             {
-                return null;
+                result.ErrorMessage += $"No tax entries found for {municipalityName}";
             }
 
-            var result = GetTaxByPriority(municipalityTaxesForDate);
-            if (result == null)
+            var appliedTaxEntry = GetTaxByPriority(municipalityTaxesForDate);
+
+            if (result.ErrorMessage == "")
             {
-                return null;
+                result.TaxApplied = appliedTaxEntry.TaxValue;
             }
 
-            return new ResultDto(result.TaxValue);
+            return result;
         }
 
         private static TaxEntryDto GetTaxByPriority(IEnumerable<TaxEntryDto> municipalityTaxesForDate)
         {
-            var municipalityTaxByPriority = municipalityTaxesForDate?.OrderByDescending(x => (int) x.TaxType).ToList();
-            var result = municipalityTaxByPriority?[0];
-            return result;
+            var municipalityTaxByPriority = municipalityTaxesForDate?.OrderByDescending(x => (int)x.TaxType).ToList();
+            return municipalityTaxByPriority?[0];
         }
 
 
@@ -67,14 +60,15 @@ namespace TaxManager.Api.Domain
         {
             var municipality = await _taxRepository.GetMunicipalityAsync(municipalityName);
             if (municipality == null)
+            {
                 return null;
-
+            }
+                
             var taxEntries = await _taxRepository.GetTaxEntriesAsync(municipality.Id, date);
-            
-            var taxEntriesForDate = taxEntries.Where(x => date >= x.DateFrom && date < x.DateTo).ToList();
-            return taxEntriesForDate;
+
+            var taxEntriesForDate = taxEntries.Where(x => date >= x.DateFrom && date < x.DateTo && x.MunicipalityId == municipality.Id).ToList();
+            return  _mapper.Map<IEnumerable<TaxEntryDto>>(taxEntriesForDate); ;
         }
 
-        #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace TaxManager.Core.Models
+﻿namespace TaxManager.Api.Models
 {
     public enum TaxTypes
     {

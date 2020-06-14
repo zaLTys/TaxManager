@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-
-namespace TaxManager.Core.Models
+﻿namespace TaxManager.Api.Models
 {
     public class MunicipalityDto
     {

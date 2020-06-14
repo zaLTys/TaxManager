@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using TaxManager.Api.DataAccess;
 using TaxManager.Api.Domain;
-using TaxManager.Core.Models;
+using TaxManager.Api.Entities;
+using TaxManager.Api.Models;
 using Xunit;
 
 namespace TaxManager.Tests
@@ -15,44 +17,36 @@ namespace TaxManager.Tests
 
         private readonly Api.Domain.TaxManager _taxManager;
         private readonly TestRepository _testRepository;
-
-        private readonly Mock<ITaxManager> _taxManagerMock;
+        private readonly IMapper _mapper;
 
         private readonly Mock<ITaxRepository> _taxRepositoryMock;
-        private readonly List<MunicipalityDto> _municipalities;
-        private readonly List<TaxEntryDto> _taxEntries;
+        private readonly List<Municipality> _municipalities;
+        private readonly List<TaxEntry> _taxEntries;
 
         public TaxManagerShould()
         {
-            _municipalities = new List<MunicipalityDto>
+
+            _municipalities = new List<Municipality>
             {
-                new MunicipalityDto (1,"Vilnius"),
-                new MunicipalityDto (2,"Kaunas")
+                new Municipality (1,"Vilnius"),
+                new Municipality (2,"Kaunas")
 
             };
 
-            //[InlineData("Vilnius", "2016.01.01", 0.1)]
-            //[InlineData("Vilnius", "2016.05.02", 0.4)]
-            //[InlineData("Vilnius", "2016.07.10", 0.2)]
-            //[InlineData("Vilnius", "2016.03.16", 0.2)]
-
-
-            _taxEntries = new List<TaxEntryDto>
+            _taxEntries = new List<TaxEntry>
             {
-                new TaxEntryDto(1, new DateTime(2016,1,1), new DateTime(2017,01,1), 1, TaxTypes.Yearly,0.2m),
-                new TaxEntryDto(2, new DateTime(2016,5,1), new DateTime(2016,6,1), 1, TaxTypes.Monthly, 0.4m),
-                new TaxEntryDto(3, new DateTime(2016,1,1), new DateTime(2016,1,2), 1, TaxTypes.Daily, 0.1m),
-                new TaxEntryDto(4, new DateTime(2016,12,25), new DateTime(2016,12,26), 1, TaxTypes.Daily, 0.1m)
+                new TaxEntry(1, new DateTime(2016,1,1), new DateTime(2017,01,1), 1, TaxTypes.Yearly,0.2m),
+                new TaxEntry(2, new DateTime(2016,5,1), new DateTime(2016,6,1), 1, TaxTypes.Monthly, 0.4m),
+                new TaxEntry(3, new DateTime(2016,1,1), new DateTime(2016,1,2), 1, TaxTypes.Daily, 0.1m),
+                new TaxEntry(4, new DateTime(2016,12,25), new DateTime(2016,12,26), 1, TaxTypes.Daily, 0.1m)
             };
-            _testRepository = new TestRepository(_municipalities, _taxEntries);
+            _testRepository = new TestRepository(_municipalities, _taxEntries, null);
 
-            
-            _taxManagerMock = new Mock<ITaxManager>();
             _taxRepositoryMock = new Mock<ITaxRepository>();
             _taxRepositoryMock.Setup(x => x.GetAllMunicipalities())
                 .Returns(_municipalities);
 
-            _taxManager = new Api.Domain.TaxManager(_taxRepositoryMock.Object);
+            _taxManager = new Api.Domain.TaxManager(_taxRepositoryMock.Object, _mapper);
         }
 
         [Fact]
@@ -81,7 +75,7 @@ namespace TaxManager.Tests
 
         public async Task GetTaxForMunicipalityAndDate(string municipalityName, string date, decimal expectedTax)
         {
-            var taxManager = new Api.Domain.TaxManager(_testRepository);
+            var taxManager = new Api.Domain.TaxManager(_testRepository, null);
 
             var result = await taxManager.GetMunicipalityTaxForDateAsync(municipalityName, date);
 

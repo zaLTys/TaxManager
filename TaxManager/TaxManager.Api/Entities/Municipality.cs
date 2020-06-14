@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
-namespace TaxManager.Core.Entities
+namespace TaxManager.Api.Entities
 {
     public class Municipality
     {
@@ -14,11 +12,21 @@ namespace TaxManager.Core.Entities
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
-        [MaxLength(200)]
-        public string Description { get; set; }
-
+        
         public ICollection<TaxEntry> TaxEntries { get; set; }
             = new List<TaxEntry>();
+
+        public Municipality(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
+        public Municipality()
+        {
+            
+        }
     }
+
 }
 

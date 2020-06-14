@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TaxManager.Api.Entities;
 using TaxManager.Api.Models;
-using TaxManager.Core.Models;
 
 namespace TaxManager.Api.DataAccess
 {
     public interface ITaxRepository
     {
-        Task<List<MunicipalityDto>> GetAllMunicipalitiesAsync();
-
-        List<MunicipalityDto> GetAllMunicipalities();
-        Task<MunicipalityDto> GetMunicipalityAsync(string municipalityName);
-        Task<IEnumerable<TaxEntryDto>> GetTaxEntriesAsync(int municipalityId, DateTime date);
+        Task<List<Municipality>> GetAllMunicipalitiesAsync();
+        List<Municipality> GetAllMunicipalities();
+        Task<Municipality> GetMunicipalityAsync(string municipalityName);
+        Task<IEnumerable<TaxEntry>> GetTaxEntriesAsync(int municipalityId, DateTime date);
     }
 }

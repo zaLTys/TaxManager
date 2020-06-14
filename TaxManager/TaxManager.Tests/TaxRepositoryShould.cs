@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AutoMapper;
 using TaxManager.Api.DataAccess;
-using TaxManager.Core.Models;
+using TaxManager.Api.Entities;
+using TaxManager.Api.Models;
 using Xunit;
 
 namespace TaxManager.Tests
@@ -14,16 +16,15 @@ namespace TaxManager.Tests
     {
 
         private readonly Mock<ITaxRepository> _taxRepositoryMock;
-        private readonly List<MunicipalityDto> _municipalities;
+        private readonly List<Municipality> _municipalities;
 
 
         public RaxRepositoryShould()
         {
-            _municipalities = new List<MunicipalityDto>
+            _municipalities = new List<Municipality>
             {
-                new MunicipalityDto (1,"Vilnius"),
-                new MunicipalityDto (2,"Kaunas")
-
+                new Municipality (1,"Vilnius"),
+                new Municipality (2,"Kaunas")
             };
 
             
@@ -67,7 +68,7 @@ namespace TaxManager.Tests
         {
             _taxRepositoryMock
                 .Setup(x => x.GetMunicipalityAsync(municipalityName))
-                .Returns(Task.FromResult(_municipalities.SingleOrDefault(x => x.Name == municipalityName)));
+                .Returns(Task.FromResult(_municipalities.SingleOrDefault()));
 
             var result = _taxRepositoryMock.Object.GetMunicipalityAsync(municipalityName).Result;
             Assert.Equal(expectedId, result.Id);

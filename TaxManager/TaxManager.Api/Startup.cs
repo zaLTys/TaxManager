@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -32,17 +33,21 @@ namespace TaxManager.Api
             services.AddControllers();
 
             var connectionString = _configuration["connectionStrings:cityInfoDBConnectionString"];
-            services.AddDbContext<TaxRepositoryContext>(o =>
+            services.AddDbContext<TaxContext>(o =>
             {
                 o.UseSqlServer(connectionString);
             });
 
+            
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddTransient<ITaxManager, Domain.TaxManager>();
 
 #if DEBUG
-            services.AddTransient<ITaxRepository, TestRepository>();
+            services.AddScoped<ITaxRepository, TaxRepository>();
 #else
-            services.AddTransient<ITaxRepository, TaxRepository>();
+            services.AddScoped<ITaxRepository, TestRepository>();
 #endif
 
         }

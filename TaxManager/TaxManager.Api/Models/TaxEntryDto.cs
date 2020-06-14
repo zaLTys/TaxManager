@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TaxManager.Core.Models
+namespace TaxManager.Api.Models
 {
     public class TaxEntryDto
     {

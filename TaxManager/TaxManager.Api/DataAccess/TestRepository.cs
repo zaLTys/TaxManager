@@ -2,47 +2,51 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TaxManager.Api.Contexts;
-using TaxManager.Core.Models;
+using TaxManager.Api.Entities;
+using TaxManager.Api.Models;
 
 namespace TaxManager.Api.DataAccess
 {
     public class TestRepository : ITaxRepository
     {
-        private readonly List<MunicipalityDto> _municipalities;
-        private readonly List<TaxEntryDto> _taxEntries;
+        private readonly List<Municipality> _municipalities;
+        private readonly List<TaxEntry> _taxEntries;
 
 
-        public TestRepository(List<MunicipalityDto> municipalities, List<TaxEntryDto> taxEntries)
+        public TestRepository(List<Municipality> municipalities, List<TaxEntry> taxEntries, IMapper mapper)
         {
             _municipalities = municipalities;
-
             _taxEntries = taxEntries;
         }
 
 
-        public async Task<List<MunicipalityDto>> GetAllMunicipalitiesAsync()
+        public async Task<List<Municipality>> GetAllMunicipalitiesAsync()
         {
-            return await new Task<List<MunicipalityDto>>(GetAllMunicipalities);
+            return await new Task<List<Municipality>>(GetAllMunicipalities);
         }
 
-        public List<MunicipalityDto> GetAllMunicipalities()
+        public List<Municipality> GetAllMunicipalities()
         {
             return _municipalities;
         }
 
-        public async Task<MunicipalityDto> GetMunicipalityAsync(string municipalityName)
+        public async Task<Municipality> GetMunicipalityAsync(string municipalityName)
         {
-            return _municipalities.SingleOrDefault(x => x.Name == municipalityName);
+            var result = _municipalities.SingleOrDefault(x => x.Name == municipalityName);
+            return result;
+
         }
 
-        public async Task<IEnumerable<TaxEntryDto>> GetTaxEntriesAsync(int municipalityId, DateTime date)
+        public async Task<IEnumerable<TaxEntry>> GetTaxEntriesAsync(int municipalityId, DateTime date)
         {
             var municipalityFound = _municipalities.SingleOrDefault(x => x.Id == municipalityId);
             if (municipalityFound == null)
                 return null;
             var taxEntriesForDate = _taxEntries.Where(x => x.DateFrom <= date && x.DateTo >= date).ToList();
+
             return taxEntriesForDate;
         }
 
