@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TaxManager.Core\TaxManager.Core.csproj" />
+    <ProjectReference Include="..\TaxManager.Api\TaxManager.Api.csproj" />
   </ItemGroup>
 
 </Project>

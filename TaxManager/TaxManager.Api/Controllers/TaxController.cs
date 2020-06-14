@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TaxManager.Core.DataAccess;
+using TaxManager.Api.DataAccess;
+using TaxManager.Core.Models;
 
 namespace TaxManager.Api.Controllers
 {
@@ -25,11 +26,11 @@ namespace TaxManager.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMunicipalities()
+        public async Task<IActionResult> GetMunicipalities()
         {
-            var cityEntities = _taxRepository.GetAllMunicipalities();
+            var municipalities = await  _taxRepository.GetAllMunicipalitiesAsync();
 
-            return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities));
+            return Ok(_mapper.Map<IEnumerable<MunicipalityDto>>(municipalities));
         }
 
     }

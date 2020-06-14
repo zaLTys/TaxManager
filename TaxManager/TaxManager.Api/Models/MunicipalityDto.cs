@@ -4,10 +4,10 @@ using System.Text;
 
 namespace TaxManager.Core.Models
 {
-    public class Municipality
+    public class MunicipalityDto
     {
 
-        public Municipality(int id, string name)
+        public MunicipalityDto(int id, string name)
         {
             Id = id;
             Name = name;

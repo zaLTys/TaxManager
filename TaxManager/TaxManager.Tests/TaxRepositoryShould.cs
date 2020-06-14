@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TaxManager.Core.DataAccess;
+using TaxManager.Api.DataAccess;
 using Xunit;
 
 namespace TaxManager.Tests

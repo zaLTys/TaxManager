@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TaxManager.Core.DataAccess;
+using TaxManager.Api.DataAccess;
 using TaxManager.Core.Models;
 
-namespace TaxManager.Core.Domain
+namespace TaxManager.Api.Domain
 {
     public class TaxManager : ITaxManager
     {
@@ -22,12 +22,15 @@ namespace TaxManager.Core.Domain
 
         #region methods
 
-        public async Task<List<Municipality>> GetMunicipalities()
+        public async Task<IEnumerable<MunicipalityDto>> GetMunicipalitiesAsync()
         {
-            return await _taxRepository.GetAllMunicipalities();
+            var result = await _taxRepository.GetAllMunicipalitiesAsync();
+            return result;
         }
 
-        public List<TaxEntry> GetMunicipalityTaxesForDate(string municipality, string date)
+
+
+        public List<TaxEntryDto> GetMunicipalityTaxesForDate(string municipality, string date)
         {
             throw new NotImplementedException();
         }

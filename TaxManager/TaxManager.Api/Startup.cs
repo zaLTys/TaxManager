@@ -31,7 +31,7 @@ namespace TaxManager.Api
             var connectionString = _configuration["connectionStrings:cityInfoDBConnectionString"];
             services.AddDbContext<TaxRepositoryContext>(o =>
             {
-                o.use(connectionString);
+                o.UseSqlServer(connectionString);
             });
         }
 

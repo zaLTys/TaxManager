@@ -2,7 +2,7 @@
 
 namespace TaxManager.Core.Models
 {
-    public class TaxEntry
+    public class TaxEntryDto
     {
         public int Id { get; set; }
         public DateTime DateFrom { get; set; }

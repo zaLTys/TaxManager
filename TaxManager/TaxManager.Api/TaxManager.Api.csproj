@@ -9,9 +9,5 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\TaxManager.Core\TaxManager.Core.csproj" />
-  </ItemGroup>
-
 
 </Project>

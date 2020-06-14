@@ -1,28 +1,28 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Moq;
-using TaxManager.Core.DataAccess;
-using Xunit;
-using TaxManager.Core.Domain;
+using System.Linq;
+using System.Threading.Tasks;
+using TaxManager.Api.DataAccess;
 using TaxManager.Core.Models;
+using Xunit;
 
 
 namespace TaxManager.Tests
 {
     public class TaxManagerShould
     {
-        private readonly Core.Domain.TaxManager _taxManager;
+        private readonly Api.Domain.TaxManager _taxManager;
         private readonly Mock<ITaxRepository> _taxRepositoryMock;
-        private readonly List<Municipality> _municipalities;
+        private readonly List<MunicipalityDto> _municipalities;
 
 
         public TaxManagerShould()
         {
-            _municipalities = new List<Municipality>
+            _municipalities = new List<MunicipalityDto>
             {
-                new Municipality (1,"Vilnius"),
-                new Municipality (2,"Kaunas")
+                new MunicipalityDto (1,"Vilnius"),
+                new MunicipalityDto (2,"Kaunas")
 
             };
 
@@ -31,13 +31,14 @@ namespace TaxManager.Tests
             _taxRepositoryMock.Setup(x => x.GetAllMunicipalities())
                 .Returns(_municipalities);
 
-            _taxManager = new Core.Domain.TaxManager(_taxRepositoryMock.Object);
+            _taxManager = new Api.Domain.TaxManager(_taxRepositoryMock.Object);
         }
 
         [Fact]
-        public void ShouldReturnAllMunicipalities()
+        public async Task ShouldReturnAllMunicipalities()
         {
-            _taxManager.
+            var result = await _taxManager.GetMunicipalitiesAsync();
+            Assert.Equal(2, result.ToList().Count);
         }
 
         [Fact]
