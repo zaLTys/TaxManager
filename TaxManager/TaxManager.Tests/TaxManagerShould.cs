@@ -8,6 +8,7 @@ using TaxManager.Api.DataAccess;
 using TaxManager.Api.Domain;
 using TaxManager.Api.Entities;
 using TaxManager.Api.Models;
+using TaxManager.Api.Profiles;
 using Xunit;
 
 namespace TaxManager.Tests
@@ -15,17 +16,22 @@ namespace TaxManager.Tests
     public class TaxManagerShould
     {
 
-        private readonly Api.Domain.TaxManager _taxManager;
-        private readonly TestRepository _testRepository;
         private readonly IMapper _mapper;
-
+        private readonly Api.Domain.TaxManager _taxManager;
         private readonly Mock<ITaxRepository> _taxRepositoryMock;
+        private readonly TestRepository _testRepository;
         private readonly List<Municipality> _municipalities;
         private readonly List<TaxEntry> _taxEntries;
 
         public TaxManagerShould()
         {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new TaxEntryProfiler());
+            });
+            _mapper = config.CreateMapper();
 
+            #region CreateTestData
             _municipalities = new List<Municipality>
             {
                 new Municipality (1,"Vilnius"),
@@ -40,28 +46,29 @@ namespace TaxManager.Tests
                 new TaxEntry(3, new DateTime(2016,1,1), new DateTime(2016,1,2), 1, TaxTypes.Daily, 0.1m),
                 new TaxEntry(4, new DateTime(2016,12,25), new DateTime(2016,12,26), 1, TaxTypes.Daily, 0.1m)
             };
-            _testRepository = new TestRepository(_municipalities, _taxEntries, null);
+            #endregion
 
             _taxRepositoryMock = new Mock<ITaxRepository>();
             _taxRepositoryMock.Setup(x => x.GetAllMunicipalities())
                 .Returns(_municipalities);
 
+            _testRepository= new TestRepository(_municipalities, _taxEntries, _mapper);
             _taxManager = new Api.Domain.TaxManager(_taxRepositoryMock.Object, _mapper);
         }
 
         [Fact]
-        public void ShouldThrowExceptionIfInputIsIncorrect()
+        public async Task ReturnErrorMessageIfInputIsIncorrect()
         {
-            var exception = Assert.ThrowsAsync<ArgumentNullException>(() => _taxManager.GetMunicipalityTaxForDateAsync("manchester", null));
-
-            Assert.Equal("request", exception.Result.ParamName);
+            var result = await _taxManager.GetMunicipalityTaxForDateAsync("", null);
+            Assert.Equal("Incorrect input", result.ErrorMessage);
         }
 
-        [Fact]
-        public void ReturnNotFoundIfDataForNonExistingMunicipalityIsRequested()
-        {
 
-              Assert.ThrowsAsync<NotImplementedException>(() => _taxManager.GetMunicipalityTaxForDateAsync("Manchester", "201.01.01"));
+        [Fact]
+        public async Task ReturnErrorMessageIfDataNotFound()
+        {
+            var result = await _taxManager.GetMunicipalityTaxForDateAsync("Manchester", "2020.01.01");
+            Assert.Equal("No tax entries found for Manchester", result.ErrorMessage);
         }
 
         [Theory]
@@ -75,12 +82,14 @@ namespace TaxManager.Tests
 
         public async Task GetTaxForMunicipalityAndDate(string municipalityName, string date, decimal expectedTax)
         {
-            var taxManager = new Api.Domain.TaxManager(_testRepository, null);
-
+            var taxManager = new Api.Domain.TaxManager(_testRepository, _mapper);
             var result = await taxManager.GetMunicipalityTaxForDateAsync(municipalityName, date);
 
             Assert.Equal(expectedTax, result.TaxApplied);
+            Assert.Null( result.ErrorMessage);
         }
+
+
 
 
     }

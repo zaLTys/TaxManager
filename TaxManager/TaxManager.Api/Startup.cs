@@ -32,7 +32,12 @@ namespace TaxManager.Api
         {
             services.AddControllers();
 
-            var connectionString = _configuration["connectionStrings:cityInfoDBConnectionString"];
+#if DEBUG
+            var connectionString = _configuration["connectionStrings:testDBConnectionString"];
+#else
+            var connectionString = _configuration["connectionStrings:taxDBConnectionString"];
+#endif
+
             services.AddDbContext<TaxContext>(o =>
             {
                 o.UseSqlServer(connectionString);

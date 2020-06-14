@@ -18,6 +18,7 @@ namespace TaxManager.Api.DataAccess
 
         public TestRepository(List<Municipality> municipalities, List<TaxEntry> taxEntries, IMapper mapper)
         {
+
             _municipalities = municipalities;
             _taxEntries = taxEntries;
         }

@@ -68,7 +68,7 @@ namespace TaxManager.Tests
         {
             _taxRepositoryMock
                 .Setup(x => x.GetMunicipalityAsync(municipalityName))
-                .Returns(Task.FromResult(_municipalities.SingleOrDefault()));
+                .Returns(Task.FromResult(_municipalities.SingleOrDefault(x=> x.Name == municipalityName)));
 
             var result = _taxRepositoryMock.Object.GetMunicipalityAsync(municipalityName).Result;
             Assert.Equal(expectedId, result.Id);

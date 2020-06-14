@@ -37,7 +37,7 @@ namespace TaxManager.Api.Controllers
         public async Task<IActionResult> GetTaxForMunicipalityByDate(string municipalityName, string date)
         {
             var result = await _taxManager.GetMunicipalityTaxForDateAsync(municipalityName, date);
-            if (result.ErrorMessage != "")
+            if (result.ErrorMessage != null)
             {
                 return NotFound(result.ErrorMessage);
             }

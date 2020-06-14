@@ -14,8 +14,10 @@ namespace TaxManager.Api.Domain
         private readonly IMapper _mapper;
         public TaxManager(ITaxRepository taxRepository, IMapper mapper)
         {
-            _taxRepository = taxRepository;
-            _mapper = mapper;
+            _taxRepository = taxRepository ??
+                             throw new ArgumentNullException(nameof(_taxRepository)); ;
+            _mapper = mapper ??
+                      throw new ArgumentNullException(nameof(_mapper)); ;
         }
 
 
@@ -29,10 +31,15 @@ namespace TaxManager.Api.Domain
 
         public async Task<ResultDto> GetMunicipalityTaxForDateAsync(string municipalityName, string date)
         {
+            var result = new ResultDto(0, null);
+            if (!municipalityName.Any() || date == null)
+            {
+                result.ErrorMessage += "Incorrect input";
+                return result;
+            }
+
             var dateAsDateTime = Convert.ToDateTime(date);
-
-
-            var result = new ResultDto(0,"");
+            
             var municipalityTaxesForDate = await GetMunicipalityTaxesForDate(municipalityName, dateAsDateTime);
             if (municipalityTaxesForDate == null)
             {
@@ -41,7 +48,7 @@ namespace TaxManager.Api.Domain
 
             var appliedTaxEntry = GetTaxByPriority(municipalityTaxesForDate);
 
-            if (result.ErrorMessage == "")
+            if (result.ErrorMessage == null)
             {
                 result.TaxApplied = appliedTaxEntry.TaxValue;
             }
