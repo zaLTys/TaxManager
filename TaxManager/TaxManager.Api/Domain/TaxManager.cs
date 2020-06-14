@@ -32,7 +32,8 @@ namespace TaxManager.Api.Domain
 
         public async Task<ResultDto> GetMunicipalityTaxForDateAsync(string municipalityName, string date)
         {
-            var result = new ResultDto(0, null);
+
+            var result = new ResultDto(0, null); //nesvaru
             if (!municipalityName.Any() || date == null)
             {
                 result.ErrorMessage += "Incorrect input";
@@ -45,6 +46,7 @@ namespace TaxManager.Api.Domain
             if (municipalityTaxesForDate == null)
             {
                 result.ErrorMessage += $"No tax entries found for {municipalityName}";
+                return result;
             }
 
             var appliedTaxEntry = GetTaxByPriority(municipalityTaxesForDate);
@@ -55,6 +57,19 @@ namespace TaxManager.Api.Domain
             }
 
             return result;
+        }
+
+        public async Task<TaxEntryDto> InsertTaxEntryAsync(string municipalityName, TaxEntryCreateDto taxEntry)
+        {
+            var municipality = _taxRepository.GetMunicipalityAsync(municipalityName);
+            if (municipality == null)
+            {
+                
+            }
+
+            var entity = _mapper.Map<TaxEntry>(taxEntry);
+            return _mapper.Map<TaxEntryDto>(await _taxRepository.InsertTaxEntryAsync(entity)); 
+
         }
 
         private static TaxEntryDto GetTaxByPriority(IEnumerable<TaxEntryDto> municipalityTaxesForDate)

@@ -41,10 +41,10 @@ namespace TaxManager.Tests
 
             _taxEntries = new List<TaxEntry>
             {
-                new TaxEntry(1, new DateTime(2016,1,1), new DateTime(2017,01,1), 1, TaxTypes.Yearly,0.2m),
-                new TaxEntry(2, new DateTime(2016,5,1), new DateTime(2016,6,1), 1, TaxTypes.Monthly, 0.4m),
-                new TaxEntry(3, new DateTime(2016,1,1), new DateTime(2016,1,2), 1, TaxTypes.Daily, 0.1m),
-                new TaxEntry(4, new DateTime(2016,12,25), new DateTime(2016,12,26), 1, TaxTypes.Daily, 0.1m)
+                new TaxEntry(1, new DateTime(2016,1,1), new DateTime(2017,01,1), 1, (int)TaxTypes.Yearly,0.2m),
+                new TaxEntry(2, new DateTime(2016,5,1), new DateTime(2016,6,1), 1, (int)TaxTypes.Monthly, 0.4m),
+                new TaxEntry(3, new DateTime(2016,1,1), new DateTime(2016,1,2), 1, (int)TaxTypes.Daily, 0.1m),
+                new TaxEntry(4, new DateTime(2016,12,25), new DateTime(2016,12,26), 1, (int)TaxTypes.Daily, 0.1m)
             };
             #endregion
 
@@ -97,7 +97,7 @@ namespace TaxManager.Tests
         {
             var dateFromAsDate = Convert.ToDateTime(dateFrom);
             var dateToAsDate = Convert.ToDateTime(dateTo);
-            var taxEntryToInsert = new TaxEntryCreateDto(dateFromAsDate, dateToAsDate, municipalityId, taxType, taxApplied);
+            var taxEntryToInsert = new TaxEntryCreateDto(dateFromAsDate, dateToAsDate, municipalityId, (int)taxType, taxApplied);
             var taxManager = new Api.Domain.TaxManager(_testRepository, _mapper);
 
             var result = await taxManager.InsertTaxEntryAsync(taxEntryToInsert);

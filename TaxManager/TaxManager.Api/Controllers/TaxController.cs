@@ -45,5 +45,21 @@ namespace TaxManager.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPost("/municipalities/{municipalityName}/Add")]
+        public async Task<IActionResult> AddTaxEntry(string municipalityName, [FromBody] TaxEntryCreateDto taxEntry)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _taxManager.InsertTaxEntryAsync(municipalityName, taxEntry);
+            if (result.Id == 0 || result.Id == null)
+            {
+                return NotFound("Insert failed");
+            }
+
+            return Ok(result);
+        }
+
     }
 }

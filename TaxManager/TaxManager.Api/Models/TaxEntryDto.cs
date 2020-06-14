@@ -4,7 +4,7 @@ namespace TaxManager.Api.Models
 {
     public class TaxEntryDto : TaxEntryCreateDto
     {
-        public TaxEntryDto(int id, DateTime dateFrom, DateTime dateTo, int municipalityId, TaxTypes taxType, decimal taxValue) 
+        public TaxEntryDto(int id, DateTime dateFrom, DateTime dateTo, int municipalityId, int taxType, decimal taxValue) 
             : base(dateFrom, dateTo, municipalityId, taxType, taxValue)
         {
             Id = id;

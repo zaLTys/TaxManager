@@ -14,7 +14,7 @@ namespace TaxManager.Api.Entities
         public Municipality Municipality { get; set; }
         public int MunicipalityId { get; set; }
         [Required]
-        public TaxTypes TaxType { get; set; }
+        public int TaxType { get; set; }
 
         [Required]
         public decimal TaxValue { get; set; }
@@ -28,7 +28,7 @@ namespace TaxManager.Api.Entities
             
         }
 
-        public TaxEntry(int id, DateTime dateFrom, DateTime dateTo, int municipalityId, TaxTypes taxType, decimal taxValue)
+        public TaxEntry(int id, DateTime dateFrom, DateTime dateTo, int municipalityId, int taxType, decimal taxValue)
         {
             Id = id;
             DateFrom = dateFrom;

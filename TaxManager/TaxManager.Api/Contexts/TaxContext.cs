@@ -42,7 +42,7 @@ namespace TaxManager.Api.Contexts
                     DateFrom = new DateTime(2016, 1, 1),
                     DateTo = new DateTime(2017, 1, 1),
                     TaxValue = 0.2m,
-                    TaxType = TaxTypes.Yearly
+                    TaxType = (int)TaxTypes.Yearly
 
                 },
                 new TaxEntry()
@@ -52,7 +52,7 @@ namespace TaxManager.Api.Contexts
                     DateFrom = new DateTime(2016, 5, 1),
                     DateTo = new DateTime(2016, 6, 1),
                     TaxValue = 0.4m,
-                    TaxType = TaxTypes.Monthly
+                    TaxType = (int)TaxTypes.Monthly
                 },
                 new TaxEntry()
                 {
@@ -61,7 +61,7 @@ namespace TaxManager.Api.Contexts
                     DateFrom = new DateTime(2016, 1, 1),
                     DateTo = new DateTime(2016, 1, 1),
                     TaxValue = 0.1m,
-                    TaxType = TaxTypes.Daily,
+                    TaxType = (int)TaxTypes.Daily,
                 },
                 new TaxEntry()
                 {
@@ -70,7 +70,7 @@ namespace TaxManager.Api.Contexts
                     DateFrom = new DateTime(2016, 12, 25),
                     DateTo = new DateTime(2016, 12, 26),
                     TaxValue = 0.1m,
-                    TaxType = TaxTypes.Daily
+                    TaxType = (int)TaxTypes.Daily
                 }
                 );
 

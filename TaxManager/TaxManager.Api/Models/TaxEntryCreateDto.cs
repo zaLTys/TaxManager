@@ -4,7 +4,7 @@ namespace TaxManager.Api.Models
 {
     public class TaxEntryCreateDto
     {
-        public TaxEntryCreateDto(DateTime dateFrom, DateTime dateTo, int municipalityId, TaxTypes taxType, decimal taxValue)
+        public TaxEntryCreateDto(DateTime dateFrom, DateTime dateTo, int municipalityId, int taxType, decimal taxValue)
         {
             DateFrom = dateFrom;
             DateTo = dateTo;
@@ -15,7 +15,12 @@ namespace TaxManager.Api.Models
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
         public int MunicipalityId { get; set; }
-        public TaxTypes TaxType { get; }
+        public int TaxType { get; }
         public decimal TaxValue { get; set; }
+
+        public TaxEntryCreateDto()
+        {
+            
+        }
     }
 }
