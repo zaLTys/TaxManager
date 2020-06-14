@@ -12,25 +12,22 @@ using Xunit;
 
 namespace TaxManager.Tests
 {
-    public class RaxRepositoryShould
+    public class TaxRepositoryShould
     {
 
         private readonly Mock<ITaxRepository> _taxRepositoryMock;
         private readonly List<Municipality> _municipalities;
 
 
-        public RaxRepositoryShould()
+        public TaxRepositoryShould()
         {
             _municipalities = new List<Municipality>
             {
                 new Municipality (1,"Vilnius"),
                 new Municipality (2,"Kaunas")
             };
-
-            
+           
             _taxRepositoryMock = new Mock<ITaxRepository>();
-            
-
         }
 
         [Fact]

@@ -18,7 +18,6 @@ namespace TaxManager.Api.DataAccess
 
         public TestRepository(List<Municipality> municipalities, List<TaxEntry> taxEntries, IMapper mapper)
         {
-
             _municipalities = municipalities;
             _taxEntries = taxEntries;
         }
@@ -51,8 +50,11 @@ namespace TaxManager.Api.DataAccess
             return taxEntriesForDate;
         }
 
-
-
+        public async  Task<TaxEntry> InsertTaxEntryAsync(TaxEntry taxEntryToInsert)
+        {
+            _taxEntries.Add(taxEntryToInsert);
+            return taxEntryToInsert;
+        }
     }}
 
     

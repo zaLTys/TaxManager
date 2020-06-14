@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using TaxManager.Api.DataAccess;
+using TaxManager.Api.Entities;
 using TaxManager.Api.Models;
 
 namespace TaxManager.Api.Domain
@@ -48,7 +49,7 @@ namespace TaxManager.Api.Domain
 
             var appliedTaxEntry = GetTaxByPriority(municipalityTaxesForDate);
 
-            if (result.ErrorMessage == null)
+            if (result.ErrorMessage == null && appliedTaxEntry !=null)
             {
                 result.TaxApplied = appliedTaxEntry.TaxValue;
             }
@@ -58,7 +59,13 @@ namespace TaxManager.Api.Domain
 
         private static TaxEntryDto GetTaxByPriority(IEnumerable<TaxEntryDto> municipalityTaxesForDate)
         {
-            var municipalityTaxByPriority = municipalityTaxesForDate?.OrderByDescending(x => (int)x.TaxType).ToList();
+            var taxes = municipalityTaxesForDate.ToList();
+            if (!taxes.Any())
+            {
+                return null;
+            }
+            var municipalityTaxByPriority = taxes?.OrderByDescending(x => (int)x.TaxType).ToList();
+            //to fix null ref
             return municipalityTaxByPriority?[0];
         }
 
@@ -77,5 +84,11 @@ namespace TaxManager.Api.Domain
             return  _mapper.Map<IEnumerable<TaxEntryDto>>(taxEntriesForDate); ;
         }
 
+        public async Task<TaxEntryDto> InsertTaxEntryAsync(TaxEntryCreateDto taxEntryToInsert)
+        {
+            var entity = _mapper.Map<TaxEntry>(taxEntryToInsert);
+            var insertedTaxEntry = await _taxRepository.InsertTaxEntryAsync(entity);
+            return _mapper.Map<TaxEntryDto>(insertedTaxEntry); ;
+        }
     }
 }

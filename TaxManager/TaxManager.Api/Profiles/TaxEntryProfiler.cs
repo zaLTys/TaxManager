@@ -10,7 +10,9 @@ namespace TaxManager.Api.Profiles
     {
         public TaxEntryProfiler()
         {
-            CreateMap<Entities.TaxEntry, Models.TaxEntryDto>();
+            CreateMap<Entities.TaxEntry, Models.TaxEntryDto>().ReverseMap();
+            CreateMap<Entities.TaxEntry, Models.TaxEntryCreateDto>().ReverseMap();
+            
             
         }
     }

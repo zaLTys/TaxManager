@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TaxManager.Api.Contexts;
 using TaxManager.Api.Entities;
+using TaxManager.Api.Models;
 
 namespace TaxManager.Api.DataAccess
 {
@@ -41,7 +42,22 @@ namespace TaxManager.Api.DataAccess
             var taxEntriesForDate = await _context.TaxEntries.Where(x => x.DateFrom <= date && x.DateTo >= date).ToListAsync();
             return taxEntriesForDate;
         }
-        
+
+        public async Task<TaxEntry> InsertTaxEntryAsync(TaxEntry taxEntryToInsert)
+        {
+            try
+            {
+                await _context.TaxEntries.AddAsync(taxEntryToInsert);
+                await _context.SaveChangesAsync();
+                return taxEntryToInsert;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
     }}
 
     

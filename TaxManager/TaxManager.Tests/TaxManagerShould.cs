@@ -85,12 +85,41 @@ namespace TaxManager.Tests
             var taxManager = new Api.Domain.TaxManager(_testRepository, _mapper);
             var result = await taxManager.GetMunicipalityTaxForDateAsync(municipalityName, date);
 
-            Assert.Equal(expectedTax, result.TaxApplied);
-            Assert.Null( result.ErrorMessage);
+            AssertResult(expectedTax, result);
         }
 
 
 
+        [Theory]
+        [InlineData("2016.04.04", "2016.04.05",1,TaxTypes.Daily, 0.5, "Vilnius")]
+        [InlineData("2016.03.03", "2016.03.04",1,TaxTypes.Daily, 0.7, "Vilnius")]
+        public async Task BeAbleToAddTaxEntry(string dateFrom, string dateTo, int municipalityId, TaxTypes taxType, decimal taxApplied, string municipalityName )
+        {
+            var dateFromAsDate = Convert.ToDateTime(dateFrom);
+            var dateToAsDate = Convert.ToDateTime(dateTo);
+            var taxEntryToInsert = new TaxEntryCreateDto(dateFromAsDate, dateToAsDate, municipalityId, taxType, taxApplied);
+            var taxManager = new Api.Domain.TaxManager(_testRepository, _mapper);
+
+            var result = await taxManager.InsertTaxEntryAsync(taxEntryToInsert);
+
+            Assert.Equal(taxEntryToInsert.TaxType, result.TaxType);
+            Assert.Equal(taxEntryToInsert.DateFrom, result.DateFrom);
+            Assert.Equal(taxEntryToInsert.DateTo, result.DateTo);
+            Assert.Equal(taxEntryToInsert.MunicipalityId, result.MunicipalityId);
+            Assert.Equal(taxEntryToInsert.TaxValue, result.TaxValue);
+            Assert.NotNull(result.Id);
+
+            var check = await taxManager.GetMunicipalityTaxForDateAsync(municipalityName, dateFrom);
+
+            AssertResult(taxEntryToInsert.TaxValue, check);
+
+        }
+
+        private static void AssertResult(decimal expectedTax, ResultDto result)
+        {
+            Assert.Equal(expectedTax, result.TaxApplied);
+            Assert.Null(result.ErrorMessage);
+        }
 
     }
 }
